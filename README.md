@@ -16,5 +16,6 @@ GRANT ALL PRIVILEGES ON DATABASE jlworks TO jlram;
 ### Run migrations
 
 ```
+cd bmat_works
 python manage.py makemigrations && python manage.py migrate
 ```
