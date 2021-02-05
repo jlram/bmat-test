@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from .models import Work, Contributor, Source
 from .serializers import WorkSerializer, ContributorSerializer, SourceSerializer
+from .utils import check_title
 
 class WorkViewSet(viewsets.ModelViewSet):
     queryset = Work.objects.all()
@@ -87,15 +88,3 @@ class ImportCSVViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No file attached'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-
-def check_title(work, row):
-    titles = work.title.split('|')
-
-    title_exists = False
-    for title in titles:
-        if title == row[0]:
-            title_exists = True
-
-    if not title_exists:
-        work.title += '|' + row[0]
-        work.save()
