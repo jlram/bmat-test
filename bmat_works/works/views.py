@@ -34,11 +34,68 @@ class ImportCSVViewSet(viewsets.ViewSet):
             # Backup array for those songs with no iswc
             no_iswc = []
 
-            # Skip the first line of the csv as it contains the titles
+            # Skip the first line of the csv as it contains the headers
             reader.__next__()
 
             for row in reader:
-                print(row)
+                # Row values : 
+                # [0]: name,
+                # [1]: contributors,
+                # [2]: iswc,
+                # [3]: source,
+                # [4]: id
+
+                if row[2] == '': #iswc is empty
+                    no_iswc.append(row)
+                else:
+                    work_qs = Work.objects.filter(iswc=row[2])
+
+                    if not work_qs.exists():
+                        work = Work.objects.create(
+                            title=row[0],
+                            iswc=row[2]
+                        )
+                    else:
+                        work = work_qs.first()
+                        check_title(work, row)
+
+                ## Extract contributors and sources
+                contributors = []
+                sources = []
+                
+                for name in row[1].split('|'):
+                    contributor = Contributor.objects.get_or_create(
+                        name=name
+                    )[0]
+
+                    contributors.append(contributor)
+                
+                source = Source.objects.get_or_create(
+                    name=row[3],
+                    id_source=int(row[4])
+                )[0]
+
+                sources.append(source)
+                
+                
+                work.contributors.add(*contributors)
+
+                for source in sources:
+                    source.work = work
+                    source.save()
+
             return Response(status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No file attached'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+def check_title(work, row):
+    titles = work.title.split('|')
+
+    title_exists = False
+    for title in titles:
+        if title == row[0]:
+            title_exists = True
+
+    if not title_exists:
+        work.title += '|' + row[0]
+        work.save()
