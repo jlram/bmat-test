@@ -4,7 +4,8 @@ from rest_framework import serializers
 class WorkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Work
-        fields = '__all__'
+        fields = ['id', 'title', 'iswc', 'contributors', 'sources']
+        depth = 1
 
 
 class ContributorSerializer(serializers.ModelSerializer):

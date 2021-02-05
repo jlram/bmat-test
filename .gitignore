@@ -3,6 +3,7 @@
 
 # Migrations
 */migrations/
+bmat_works/works/migrations
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
