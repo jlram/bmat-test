@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from .models import Work, Contributor, Source
 from .serializers import WorkSerializer, ContributorSerializer, SourceSerializer
-from .utils import check_title
+from .utils import check_title, add_relations
 
 class WorkViewSet(viewsets.ModelViewSet):
     queryset = Work.objects.all()
@@ -24,7 +24,15 @@ class SourceViewSet(viewsets.ModelViewSet):
 
 
 class ImportCSVViewSet(viewsets.ViewSet):
-    
+    """
+        :param `file`: .csv file
+        :returns 200 OK
+        :raises 406 NOT ACCEPTABLE
+
+        Reads a csv file. Creates or completes information based on its content.
+
+    """
+
     def create(self, request):
         if 'file' in request.data:
             file = request.data['file']
@@ -46,9 +54,10 @@ class ImportCSVViewSet(viewsets.ViewSet):
                 # [3]: source,
                 # [4]: id
 
-                if row[2] == '': #iswc is empty
+                if row[2] == '':  # iswc is empty
                     no_iswc.append(row)
                 else:
+                    # Checks if Work with that iswc already exists
                     work_qs = Work.objects.filter(iswc=row[2])
 
                     if not work_qs.exists():
@@ -58,32 +67,20 @@ class ImportCSVViewSet(viewsets.ViewSet):
                         )
                     else:
                         work = work_qs.first()
-                        check_title(work, row)
+                        check_title(work, row[0])
 
-                ## Extract contributors and sources
-                contributors = []
-                sources = []
-                
-                for name in row[1].split('|'):
-                    contributor = Contributor.objects.get_or_create(
-                        name=name
-                    )[0]
+                    # Adds contributors and sources to work
+                    add_relations(work, row[1], (row[3], row[4]))
 
-                    contributors.append(contributor)
-                
-                source = Source.objects.get_or_create(
-                    name=row[3],
-                    id_source=int(row[4])
-                )[0]
-
-                sources.append(source)
-                
-                
-                work.contributors.add(*contributors)
-
-                for source in sources:
-                    source.work = work
-                    source.save()
+                    # Finally, checks songs with no iswc
+                    # If they have the exact same title and contributors, we can consider
+                    # both as the same track, even if the iswc is not present.
+                    # If there are differences, we are risking to be mixing up two different songs.
+                    for no_iswc_work in no_iswc:
+                        for contributor in no_iswc_work[1].split('|'):
+                            pass # TODO remove
+                            # TODO Q object OR filter by name, take contributor queryset and compare with work.contributors.all() (?)
+                            # TODO Later, iterate works and compare
 
             return Response(status=status.HTTP_200_OK)
         else:
