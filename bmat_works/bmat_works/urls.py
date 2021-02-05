@@ -19,9 +19,12 @@ from rest_framework import routers
 from works import views as views
 
 router = routers.DefaultRouter()
+# CRUD
 router.register(r'works', views.WorkViewSet)
 router.register(r'contributors', views.ContributorViewSet)
 router.register(r'sources', views.SourceViewSet)
+# Other views
+router.register(r'import_csv', views.ImportCSVViewSet, basename='import_csv')
 
 urlpatterns = [
     path('', include(router.urls)),
