@@ -1,6 +1,8 @@
 import csv
 import io
 
+from django.db.models import Q
+
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
@@ -9,16 +11,19 @@ from .serializers import WorkSerializer, ContributorSerializer, SourceSerializer
 from .utils import check_title, add_relations
 
 class WorkViewSet(viewsets.ModelViewSet):
+    """Work CRUD"""
     queryset = Work.objects.all()
     serializer_class = WorkSerializer
 
 
 class ContributorViewSet(viewsets.ModelViewSet):
+    """Work CRUD"""
     queryset = Contributor.objects.all()
     serializer_class = ContributorSerializer
 
 
 class SourceViewSet(viewsets.ModelViewSet):
+    """Work CRUD"""
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
 
@@ -77,10 +82,19 @@ class ImportCSVViewSet(viewsets.ViewSet):
                     # both as the same track, even if the iswc is not present.
                     # If there are differences, we are risking to be mixing up two different songs.
                     for no_iswc_work in no_iswc:
+                        filter = Q()  # Empty filter
+                        
+                        # For each contributor, adds a filter based on its name
                         for contributor in no_iswc_work[1].split('|'):
-                            pass # TODO remove
-                            # TODO Q object OR filter by name, take contributor queryset and compare with work.contributors.all() (?)
-                            # TODO Later, iterate works and compare
+                            filter |= Q(name=contributor)
+                        
+                        contributor_qs = Contributor.objects.filter(filter)
+                        work_qs = Work.objects.all()
+
+                        for work in work_qs:
+                            # Best way to compare Querysets
+                            if set(work.contributors.all()) == set(Contributor.objects.filter(filter)):
+                                add_relations(work, None, (no_iswc_work[3], no_iswc_work[4]))
 
             return Response(status=status.HTTP_200_OK)
         else:
