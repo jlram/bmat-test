@@ -28,21 +28,22 @@ def add_relations(work, input_contributors=None, input_source=None):
         :input_: contributors to check
     """
 
-    ## Extracts contributors
-    contributors = []
+    if input_contributors:
+        ## Extracts contributors
+        contributors = []
 
-    # Reads each contributor, creates it if it does not exist
-    for name in input_contributors.split('|'):
-        contributor, contributor_created = Contributor.objects.get_or_create(
-            name=name
-        )
+        # Reads each contributor, creates it if it does not exist
+        for name in input_contributors.split('|'):
+            contributor, contributor_created = Contributor.objects.get_or_create(
+                name=name
+            )
 
-        if contributor_created:
-            contributors.append(contributor)
+            if contributor_created:
+                contributors.append(contributor)
 
-    # Refreshes song contributors if needed
-    if len(contributors) > 0:
-        work.contributors.add(*contributors)
+        # Refreshes song contributors if needed
+        if len(contributors) > 0:
+            work.contributors.add(*contributors)
     
     # Reads source and id_source, creates it if it does not exist
     source, source_created = Source.objects.get_or_create(
