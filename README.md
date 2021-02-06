@@ -28,7 +28,7 @@ GRANT ALL PRIVILEGES ON DATABASE jlworks TO jlram;
 
 ### Install dependencies
 
-At this point, you should have created a virtual enviroment
+At this point, you should have created a virtual enviroment, then run:
 
 ```
 pip install -r requirements.txt
