@@ -9,6 +9,15 @@ cd bmat_works/
 
 ### Setup database
 
+#### Method 1: Docker
+
+- Open terminal and run
+```
+docker run -it -p 5432:5432 -e POSTGRES_PASSWORD=jlram -e POSTGRES_USER=jlram -e POSTGRES_DB=jlworks -d postgres
+```
+
+#### Method 2: Local database
+
 - Open terminal and open PostgreSQL shell (`sudo -u postgres psql`)
 - Then create user, database and grant privileges:
 ```
