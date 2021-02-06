@@ -34,6 +34,8 @@ At this point, you should have created a virtual enviroment
 pip install -r requirements.txt
 ```
 
+*Note: some dependencies might be needed for psycopg2, depending on your OS*
+
 ### Apply migrations
 
 ```
