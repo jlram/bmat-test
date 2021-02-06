@@ -42,7 +42,13 @@ pip install -r requirements.txt
 python manage.py makemigrations works && python manage.py migrate
 ```
 
-### Run
+### Test Endpoints
+
+```
+python manage.py test
+```
+
+### Run API
 
 ```
 python manage.py runserver
