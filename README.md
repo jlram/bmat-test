@@ -67,9 +67,9 @@ Your API will be running at `127.0.0.1:8000`
 
 ## Frontend Instructions
 
-Move back to root and then 
+Move back to root and then to the Frontend directory
 ```
-cd bmat_frontend/
+cd ../bmat_frontend/
 ```
 
 ### Install dependencies
