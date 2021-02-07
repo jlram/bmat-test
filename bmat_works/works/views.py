@@ -143,7 +143,7 @@ class ExportCSVViewSet(viewsets.ViewSet):
 
     def list(self, request):
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="jlramos_metadata.csv"'
+        response['Content-Disposition'] = 'attachment; filename="jlram_metadata.csv"'
 
         fieldnames = ['title', 'contributors', 'iswc', 'source', 'id']
         writer = csv.DictWriter(response, fieldnames)
