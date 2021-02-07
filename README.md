@@ -111,4 +111,4 @@ Python is a very strong and volatile language. In my opinion, a good idea would 
 Not at all
 
 ### 4. If not, what would you do to improve it?
-Implement pagination with Django Rest and Vue.js' datatable, so the user receives 100 songs at once, and every time they click ➡️, other 100 songs load. Also a good idea for that amount of songs would be to implement `django-rest-framework-filters` to get a more concise list of Works, depending on the user's interests.
+Implement pagination with Django Rest and Vue.js' datatable, so the user receives 100 songs at once, and every time they click ➡️ on the datatable, another 100 songs load. Also a good idea for that amount of songs would be implementing `django-rest-framework-filters` to get a more concise list of Works, depending on the user's interests.
