@@ -148,28 +148,31 @@ class ExportCSVViewSet(viewsets.ViewSet):
         fieldnames = ['title', 'contributors', 'iswc', 'source', 'id']
         writer = csv.DictWriter(response, fieldnames)
         writer.writeheader()
-        for work in Work.objects.all():
-            # Writes Contributor string, separated by |
-            write_contributors = ''
-            for index, contributor in enumerate(work.contributors.all()):
-                write_contributors += contributor.name + ('|' if index != len(work.contributors.all())-1 else '')
+        if Work.objects.all().count() > 0:
+            for work in Work.objects.all():
+                # Writes Contributor string, separated by |
+                write_contributors = ''
+                for index, contributor in enumerate(work.contributors.all()):
+                    write_contributors += contributor.name + ('|' if index != len(work.contributors.all())-1 else '')
 
-            # Writes Source string, separated by |
-            sources = Source.objects.filter(work=work)
-            write_src_names = ''
-            write_src_ids = ''
+                # Writes Source string, separated by |
+                sources = Source.objects.filter(work=work)
+                write_src_names = ''
+                write_src_ids = ''
 
-            for index, source in enumerate(sources):
-                write_src_names += source.name + ('|' if index != len(sources)-1 else '')
-                write_src_ids += str(source.id_source) + ('|' if index != len(sources)-1 else '')
+                for index, source in enumerate(sources):
+                    write_src_names += source.name + ('|' if index != len(sources)-1 else '')
+                    write_src_ids += str(source.id_source) + ('|' if index != len(sources)-1 else '')
 
-            
-            writer.writerow({
-                'title': work.title,
-                'contributors': write_contributors,
-                'iswc': work.iswc,
-                'source': write_src_names,
-                'id': write_src_ids
-            })
+                
+                writer.writerow({
+                    'title': work.title,
+                    'contributors': write_contributors,
+                    'iswc': work.iswc,
+                    'source': write_src_names,
+                    'id': write_src_ids
+                })
 
-        return response
+            return response
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)

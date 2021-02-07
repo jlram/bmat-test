@@ -50,7 +50,7 @@
           </v-data-table>
           <v-row id="exportRow">
             <v-spacer />
-            <v-col cols="2"><v-btn @click="downloadCSV()"> Export data to CSV </v-btn></v-col>
+            <v-col cols="2"><v-btn @click="downloadCSV()" :disabled="works.length == 0"> Export data to CSV </v-btn></v-col>
           </v-row>
         </v-card>
       </v-col>
@@ -107,11 +107,13 @@ export default {
 
     downloadCSV() {
       this.$http.get("http://127.0.0.1:8000/export_csv/").then((response) => {
-        const anchor = document.createElement('a')
-        anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(response.data)
-        anchor.target = '_blank'
-        anchor.download = 'jlram_metadata.csv'
-        anchor.click()
+        if (response.data && response.data != '') {
+          const anchor = document.createElement('a')
+          anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(response.data)
+          anchor.target = '_blank'
+          anchor.download = 'jlram_metadata.csv'
+          anchor.click()
+        }
       })
     },
 

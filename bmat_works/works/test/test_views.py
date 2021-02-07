@@ -33,7 +33,14 @@ class ImportCSVViewSetTest(TestCase):
 class ExportCSVViewSetTest(TestCase):
     """Test for CSV Export"""
 
-    def setUp():
+    def test_export_csv_empty_db(self):
+        print('test_export_csv_empty_db')
+        response = client.get('/export_csv/')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+    def test_export_csv(self):
+        print('test_export_csv')
         show_me_how = Work.objects.create(
             title='Show Me How',
             iswc='TS1234568'
@@ -44,3 +51,6 @@ class ExportCSVViewSetTest(TestCase):
             Contributor.objects.create(name='Jessy Caron'),
             Contributor.objects.create(name='Dragos Chiriac')
         ])
+
+        response = client.get('/export_csv/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
