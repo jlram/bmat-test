@@ -9,8 +9,114 @@ from .serializers import WorkSerializer, ContributorSerializer, SourceSerializer
 # initialize the APIClient app
 client = Client()
 
+class WorkViewSetTest(TestCase):
+    """Test for Work endpoints"""
+
+    def setUp(self):
+        Work.objects.create(
+            name='C', 
+            iswc='TS1234567'
+            contributors=[
+                Contributor.objects.create(name='Kashikura Takashi'), 
+                Contributor.objects.create(name='Mino Takaaki'), 
+                Contributor.objects.create(name='Yamane Satoshi'), 
+                Contributor.objects.create(name='Yamazaki Hirokazu')
+            ]
+        )
+
+        Work.objects.create(
+            name='Show Me How',
+            iswc='TS1234568',
+            contributors=[
+                Contributor.objects.create(name='Emmanuelle Proulx'),
+                Contributor.objects.create(name='Jessy Caron'),
+                Contributor.objects.create(name='Dragos Chiriac')
+            ]
+        )
+
+        Work.objects.create(
+            name='Nigel Hitter',
+            iswc='TS1234569',
+            contributors=[
+                Contributor.objects.create(name='Eddie Green'),
+                Contributor.objects.create(name='Charlie Forbes'),
+                Contributor.objects.create(name='Josh Finerty'),
+                Contributor.objects.create(name='Charlie Steen')
+            ]
+        )
+
+
+    def test_get_works(self):
+        print('test_get_works')
+        response = client.get('/works/')
+        work_data = WorkSerializer(Work.objects.all(), many=True).data
+        self.assertEqual(response.data, work_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+    def test_retrieve_work(self):
+        print('test_retrieve_work')
+        instance = Work.objects.filter(title='C').first()
+        response = client.get('/works/' + str(instance.id) + '/')
+        work_data = WorkSerializer(instance).data
+        self.assertEqual(response.data, work_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+    def test_retrieve_work_not_found(self):
+        print('test_retrieve_work_not_found')
+        response = client.get('/works/999/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+    def test_post_work(self):
+        print('test_post_work')
+        WORK_TITLE = 'Still Beating'
+        response = client.post('/works/', {
+            'title': WORK_TITLE,
+            'iswc': 'TS999888777',
+            contributors=[Contributor.objects.create(name='Mac DeMarco')]
+        })
+        work_data = WorkSerializer(Work.objects.last()).data
+        self.assertEqual(response.data, work_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+    def test_post_work_blank_contributors(self):
+        print('test_post_work_blank_contributors')
+        WORK_TITLE = 'Aint Nice'
+        response = client.post('/works/', {
+            'title': WORK_TITLE,
+            'iswc': 'TS999888777',
+            contributors=[]
+        })
+        work_data = WorkSerializer(Work.objects.last()).data
+        self.assertEqual(response.data, work_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+
+    def test_post_work_no_data(self):
+        print('test_post_work_no_data')
+        response = client.post('/works/', {'title': '', 'iswc': ''})
+        self.assertContains(response, '"iswc":', status_code=400)
+
+
+    def test_delete_work(self):
+        print('test_delete_work')
+        instance = Work.objects.last()
+        response = client.delete('/works/' + str(instance.id) + '/')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+    def test_delete_work_not_found(self):
+        print('test_delete_work_not_found')
+        response = client.delete('/works/999.')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 class ContributorViewSetTest(TestCase):
-    """Test for contributors endpoint"""
+    """Test for Contributor endpoints"""
 
     def setUp(self):
         Contributor.objects.create(name='Jose Luis Ramos')
@@ -71,7 +177,7 @@ class ContributorViewSetTest(TestCase):
 
 
 class SourceViewSetTest(TestCase):
-    """Test for contributors endpoint"""
+    """Test for Source endpoints"""
 
     def setUp(self):
         Source.objects.create(name='Sony', id_source=1)
