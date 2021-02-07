@@ -17,14 +17,14 @@ class WorkViewSet(viewsets.ModelViewSet):
     serializer_class = WorkSerializer
 
     def retrieve(self, request, pk=None):
-        """Retrieves Work by ISWC instead of ID"""
+        """RETRIEVE Work by ISWC instead of ID"""
         work = get_object_or_404(self.queryset, iswc=pk)
         serializer = WorkSerializer(work)
         return Response(serializer.data)
 
 
     def update(self, request, *args, **kwargs):
-        """Updates Work by ISWC instead of ID"""
+        """UPDATE Work by ISWC instead of ID"""
         instance = self.queryset.get(iswc=kwargs.get('pk'))
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -32,18 +32,18 @@ class WorkViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
-        """Destroys Work by ISWC instead of ID"""
+        """DELETE Work by ISWC instead of ID"""
         work = get_object_or_404(self.queryset, iswc=pk)
         work.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ContributorViewSet(viewsets.ModelViewSet):
-    """Work CRUD"""
+    """Contributor CRUD"""
     queryset = Contributor.objects.all()
     serializer_class = ContributorSerializer
 
     def update(self, request, *args, **kwargs):
-        """Partial update for Contributor"""
+        """Overridden ModelViewSet's PUT for Contributor, allowing partial update"""
         instance = self.queryset.get(pk=kwargs.get('pk'))
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -52,12 +52,12 @@ class ContributorViewSet(viewsets.ModelViewSet):
 
 
 class SourceViewSet(viewsets.ModelViewSet):
-    """Work CRUD"""
+    """Source CRUD"""
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
 
     def update(self, request, *args, **kwargs):
-        """Partial update for Source"""
+        """Overridden ModelViewSet's PUT for Source, allowing partial update"""
         instance = self.queryset.get(pk=kwargs.get('pk'))
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
