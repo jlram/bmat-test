@@ -13,37 +13,40 @@ class WorkViewSetTest(TestCase):
     """Test for Work endpoints"""
 
     def setUp(self):
-        Work.objects.create(
-            name='C', 
+        c = Work.objects.create(
+            title='C', 
             iswc='TS1234567'
-            contributors=[
-                Contributor.objects.create(name='Kashikura Takashi'), 
-                Contributor.objects.create(name='Mino Takaaki'), 
-                Contributor.objects.create(name='Yamane Satoshi'), 
-                Contributor.objects.create(name='Yamazaki Hirokazu')
-            ]
         )
 
-        Work.objects.create(
-            name='Show Me How',
-            iswc='TS1234568',
-            contributors=[
-                Contributor.objects.create(name='Emmanuelle Proulx'),
-                Contributor.objects.create(name='Jessy Caron'),
-                Contributor.objects.create(name='Dragos Chiriac')
-            ]
+        c.contributors.set([
+            Contributor.objects.create(name='Kashikura Takashi'), 
+            Contributor.objects.create(name='Mino Takaaki'), 
+            Contributor.objects.create(name='Yamane Satoshi'), 
+            Contributor.objects.create(name='Yamazaki Hirokazu')
+        ])
+
+        show_me_how = Work.objects.create(
+            title='Show Me How',
+            iswc='TS1234568'
         )
 
-        Work.objects.create(
-            name='Nigel Hitter',
-            iswc='TS1234569',
-            contributors=[
-                Contributor.objects.create(name='Eddie Green'),
-                Contributor.objects.create(name='Charlie Forbes'),
-                Contributor.objects.create(name='Josh Finerty'),
-                Contributor.objects.create(name='Charlie Steen')
-            ]
+        show_me_how.contributors.set([
+            Contributor.objects.create(name='Emmanuelle Proulx'),
+            Contributor.objects.create(name='Jessy Caron'),
+            Contributor.objects.create(name='Dragos Chiriac')
+        ])
+
+        nigel_hitter = Work.objects.create(
+            title='Nigel Hitter',
+            iswc='TS1234569'
         )
+
+        nigel_hitter.contributors.set([
+            Contributor.objects.create(name='Eddie Green'),
+            Contributor.objects.create(name='Charlie Forbes'),
+            Contributor.objects.create(name='Josh Finerty'),
+            Contributor.objects.create(name='Charlie Steen')
+        ])
 
 
     def test_get_works(self):
@@ -74,8 +77,7 @@ class WorkViewSetTest(TestCase):
         WORK_TITLE = 'Still Beating'
         response = client.post('/works/', {
             'title': WORK_TITLE,
-            'iswc': 'TS999888777',
-            contributors=[Contributor.objects.create(name='Mac DeMarco')]
+            'iswc': 'TS999888777'
         })
         work_data = WorkSerializer(Work.objects.last()).data
         self.assertEqual(response.data, work_data)
@@ -88,7 +90,7 @@ class WorkViewSetTest(TestCase):
         response = client.post('/works/', {
             'title': WORK_TITLE,
             'iswc': 'TS999888777',
-            contributors=[]
+            'contributors': []
         })
         work_data = WorkSerializer(Work.objects.last()).data
         self.assertEqual(response.data, work_data)
@@ -111,7 +113,7 @@ class WorkViewSetTest(TestCase):
 
     def test_delete_work_not_found(self):
         print('test_delete_work_not_found')
-        response = client.delete('/works/999.')
+        response = client.delete('/works/999/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
