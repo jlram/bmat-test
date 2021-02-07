@@ -129,8 +129,8 @@ class ImportCSVViewSet(viewsets.ViewSet):
                         work_qs = Work.objects.all()
 
                         for work in work_qs:
-                            # Best way to compare Querysets
-                            if set(work.contributors.all()) == set(Contributor.objects.filter(filter)):
+                            # Compare titles and then Querysets by turning them into sets
+                            if no_iswc_work[0] in work.title.split('|') and set(work.contributors.all()) == set(Contributor.objects.filter(filter)):
                                 add_relations(work, None, (no_iswc_work[3], no_iswc_work[4]))
 
             return Response(status=status.HTTP_200_OK)
@@ -164,7 +164,6 @@ class ExportCSVViewSet(viewsets.ViewSet):
                     write_src_names += source.name + ('|' if index != len(sources)-1 else '')
                     write_src_ids += str(source.id_source) + ('|' if index != len(sources)-1 else '')
 
-                
                 writer.writerow({
                     'title': work.title,
                     'contributors': write_contributors,
@@ -172,7 +171,6 @@ class ExportCSVViewSet(viewsets.ViewSet):
                     'source': write_src_names,
                     'id': write_src_ids
                 })
-
             return response
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
