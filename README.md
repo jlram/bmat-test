@@ -79,6 +79,7 @@ npm run serve
 - Open the Single View Application at `127.0.0.1:8080`
 - Press "Open CSV to load metadata" to upload your file
 - Works will be displayed
+- To perform a second upload, press X on the file input and then upload another (or the same) csv
 - To export Works to another importable CSV file, press "Export Data to CSV"
 - To retrieve a Work by its ISWC, navigate to `127.0.0.1:8000/<work_iswc>/`
 - Every endpoint is listed at `127.0.0.1:8000`, including:
