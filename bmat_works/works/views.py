@@ -31,6 +31,7 @@ class WorkViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data)
 
+
     def destroy(self, request, pk=None):
         """DELETE Work by ISWC instead of ID"""
         work = get_object_or_404(self.queryset, iswc=pk)
