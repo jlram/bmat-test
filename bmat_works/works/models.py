@@ -5,7 +5,7 @@ class Work(models.Model):
 
     title = models.CharField(max_length=250, null=False, default='UNTITLED')
     contributors = models.ManyToManyField('Contributor', related_name='contributors', blank=True)
-    iswc = models.CharField(max_length=20, null=True)
+    iswc = models.CharField(max_length=20, null=False)
 
     def __str__(self):
             return self.iswc
