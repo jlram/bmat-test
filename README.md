@@ -24,6 +24,7 @@ docker run -it -p 5432:5432 -e POSTGRES_PASSWORD=jlram -e POSTGRES_USER=jlram -e
 CREATE USER jlram WITH PASSWORD 'jlram';
 CREATE DATABASE jlworks;
 GRANT ALL PRIVILEGES ON DATABASE jlworks TO jlram;
+ALTER ROLE jlram SUPERUSER;
 ```
 
 ### Install dependencies
@@ -43,6 +44,14 @@ python manage.py makemigrations works && python manage.py migrate
 ```
 
 ### Test Endpoints
+
+Probably you would need to modify permissions for `jlram` to run tests. In this case, open your PostgreSQL shell on Docker or locally and run:
+
+```
+ALTER USER jlram CREATEDB;
+```
+
+Once this is done, tests are ready to run:
 
 ```
 python manage.py test
