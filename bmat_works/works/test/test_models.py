@@ -58,7 +58,7 @@ class WorkViewSetTest(TestCase):
     def test_retrieve_work(self):
         print('test_retrieve_work')
         instance = Work.objects.filter(title='C').first()
-        response = client.get('/works/' + str(instance.id) + '/')
+        response = client.get('/works/' + str(instance.iswc) + '/')
         work_data = WorkSerializer(instance).data
         self.assertEqual(response.data, work_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

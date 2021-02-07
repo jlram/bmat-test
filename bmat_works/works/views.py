@@ -2,6 +2,7 @@ import csv
 import io
 
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -14,6 +15,12 @@ class WorkViewSet(viewsets.ModelViewSet):
     """Work CRUD"""
     queryset = Work.objects.all()
     serializer_class = WorkSerializer
+
+    def retrieve(self, request, pk=None):
+        """Overridden RETRIEVE method to filter by ISWC instead of ID"""
+        work = get_object_or_404(self.queryset, iswc=pk)
+        serializer = WorkSerializer(work)
+        return Response(serializer.data)
 
 
 class ContributorViewSet(viewsets.ModelViewSet):
