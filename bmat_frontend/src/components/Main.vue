@@ -69,7 +69,6 @@ export default {
       {
         text: "Title",
         align: "start",
-        sortable: false,
         value: "title",
       },
       { text: "Contributors", value: "contributors" },
