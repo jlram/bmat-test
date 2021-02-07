@@ -139,7 +139,11 @@ class ImportCSVViewSet(viewsets.ViewSet):
 
 
 class ExportCSVViewSet(viewsets.ViewSet):
-    """Export Works, Contributors and Sources to a readable csv file"""
+    """
+        Export Works, Contributors and Sources to a readable csv file
+        :returns 200 OK
+        :raises 204 NO CONTENT
+    """
 
     def list(self, request):
         response = HttpResponse(content_type='text/csv')
