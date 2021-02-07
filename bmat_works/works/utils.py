@@ -14,7 +14,7 @@ def check_title(work, input_title):
 
     title_exists = False
     for title in titles:
-        if title == input_title:
+        if title in input_title:
             title_exists = True
 
     if not title_exists:
@@ -43,13 +43,15 @@ def add_relations(work, input_contributors=None, input_source=None):
         # Refreshes song contributors if needed
         if len(contributors) > 0:
             work.contributors.add(*contributors)
+            work.save()
     
     # Reads source and id_source, creates it if it does not exist
-    source, source_created = Source.objects.get_or_create(
-        name=input_source[0],
-        id_source=int(input_source[1])
-    )
+    for name, id in zip(input_source[0].split('|'), input_source[1].split('|')):
+        source, source_created = Source.objects.get_or_create(
+            name=name,
+            id_source=id
+        )
     
-    # Assigns song to source
-    source.work = work
-    source.save()
+        # Assigns song to source
+        source.work = work
+        source.save()
