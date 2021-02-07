@@ -25,6 +25,7 @@ router.register(r'contributors', views.ContributorViewSet)
 router.register(r'sources', views.SourceViewSet)
 # Other views
 router.register(r'import_csv', views.ImportCSVViewSet, basename='import_csv')
+router.register(r'export_csv', views.ExportCSVViewSet, basename='export_csv')
 
 urlpatterns = [
     path('', include(router.urls)),
