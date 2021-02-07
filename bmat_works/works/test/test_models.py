@@ -2,8 +2,8 @@ import json
 from rest_framework import status
 from django.test import TestCase, Client
 from django.urls import reverse
-from .models import Work, Contributor, Source
-from .serializers import WorkSerializer, ContributorSerializer, SourceSerializer
+from ..models import Work, Contributor, Source
+from ..serializers import WorkSerializer, ContributorSerializer, SourceSerializer
 
 
 # initialize the APIClient app
