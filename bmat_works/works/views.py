@@ -17,22 +17,52 @@ class WorkViewSet(viewsets.ModelViewSet):
     serializer_class = WorkSerializer
 
     def retrieve(self, request, pk=None):
-        """Overridden RETRIEVE method to filter by ISWC instead of ID"""
+        """Retrieves Work by ISWC instead of ID"""
         work = get_object_or_404(self.queryset, iswc=pk)
         serializer = WorkSerializer(work)
         return Response(serializer.data)
 
+
+    def update(self, request, *args, **kwargs):
+        """Updates Work by ISWC instead of ID"""
+        instance = self.queryset.get(iswc=kwargs.get('pk'))
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        """Destroys Work by ISWC instead of ID"""
+        work = get_object_or_404(self.queryset, iswc=pk)
+        work.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ContributorViewSet(viewsets.ModelViewSet):
     """Work CRUD"""
     queryset = Contributor.objects.all()
     serializer_class = ContributorSerializer
 
+    def update(self, request, *args, **kwargs):
+        """Partial update for Contributor"""
+        instance = self.queryset.get(pk=kwargs.get('pk'))
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
 
 class SourceViewSet(viewsets.ModelViewSet):
     """Work CRUD"""
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
+
+    def update(self, request, *args, **kwargs):
+        """Partial update for Source"""
+        instance = self.queryset.get(pk=kwargs.get('pk'))
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 class ImportCSVViewSet(viewsets.ViewSet):

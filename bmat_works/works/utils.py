@@ -38,8 +38,7 @@ def add_relations(work, input_contributors=None, input_source=None):
                 name=name
             )
 
-            if contributor_created:
-                contributors.append(contributor)
+            contributors.append(contributor)
 
         # Refreshes song contributors if needed
         if len(contributors) > 0:
@@ -52,6 +51,5 @@ def add_relations(work, input_contributors=None, input_source=None):
     )
     
     # Assigns song to source
-    if source_created:
-        source.work = work
-        source.save()
+    source.work = work
+    source.save()
