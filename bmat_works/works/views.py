@@ -24,7 +24,7 @@ class WorkViewSet(viewsets.ModelViewSet):
 
 
     def update(self, request, *args, **kwargs):
-        """UPDATE Work by ISWC instead of ID"""
+        """POST Work by ISWC instead of ID"""
         instance = self.queryset.get(iswc=kwargs.get('pk'))
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -68,6 +68,7 @@ class SourceViewSet(viewsets.ModelViewSet):
 class ImportCSVViewSet(viewsets.ViewSet):
     """
         :param `file`: .csv file
+        :method POST
         :returns 200 OK
         :raises 406 NOT ACCEPTABLE
 
@@ -141,6 +142,7 @@ class ImportCSVViewSet(viewsets.ViewSet):
 class ExportCSVViewSet(viewsets.ViewSet):
     """
         Export Works, Contributors and Sources to a readable csv file
+        :method GET
         :returns 200 OK
         :raises 204 NO CONTENT
     """
