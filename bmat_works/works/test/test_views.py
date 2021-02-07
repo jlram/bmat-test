@@ -18,12 +18,12 @@ class ImportCSVViewSetTest(TestCase):
         self.data = open(file_path, 'r')
 
     def test_import_csv_no_file(self):
-        print('test_get_works')
+        print('test_import_csv_no_file')
         response = client.post('/import_csv/')
         self.assertContains(response, '"error":', status_code=406)
 
     def test_import_csv(self):
-        print('test_get_works')
+        print('test_import_csv')
         response = client.post('/import_csv/', {'file': self.data})
         work_count = Work.objects.all().count()
         self.assertEqual(work_count, 4)
